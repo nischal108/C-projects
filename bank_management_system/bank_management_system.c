@@ -23,8 +23,8 @@ bank NepalRastraBank; // Global instance of the bank named NepalRastraBank
 int searchForAccount(int customer_account_number);
 void customerPortal(bankAccount customerAccount, int i);
 void CustomerTasks(int acNumber);
-void withdraw(bankAccount customerAccount);
-void transfer(bank *bankInstance, const bankAccount senderAccount);
+void withdraw(bankAccount * customerAccount);
+void transfer(bank *bankInstance, bankAccount *senderAccount);
 int createAccount(bank *bankInstance);
 int deleteAccount(bank *bankInstance, int accountNumber);
 void displayAllAccounts(const bank *bankInstance);
@@ -58,10 +58,10 @@ void customerPortal(bankAccount customerAccount, int i){
                 printf("Your account balance: %.2f\n", NepalRastraBank.accounts[i].balance);
                 break;
             case 2:
-                withdraw(customerAccount);
+                withdraw(&customerAccount);
                 break;
             case 3:
-                transfer(&NepalRastraBank, customerAccount);
+                transfer(&NepalRastraBank, &customerAccount);
                 break;
             case 4:
                 printf("Exiting customer tasks.\n");
@@ -92,15 +92,15 @@ void CustomerTasks(int acNumber) {
     }
 }
 
-void withdraw(bankAccount customerAccount){
+void withdraw(bankAccount *customerAccount){
     double withdrawAmount;
     printf("Enter the amount to withdraw: ");
     scanf("%lf", &withdrawAmount);
-    customerAccount.balance -= withdrawAmount;
-    printf("You have successfully withdrawn %.2f & your new balance is %.2f\n", withdrawAmount, customerAccount.balance);
+    customerAccount->balance -= withdrawAmount;
+    printf("You have successfully withdrawn %.2f & your new balance is %.2f\n", withdrawAmount, customerAccount->balance);
 }
 
-void transfer(bank *bankInstance, bankAccount senderAccount){
+void transfer(bank *bankInstance, bankAccount *senderAccount){
     int receiverACnumber, indexOfreceiver;
     double transferAmount; 
 
@@ -114,8 +114,8 @@ void transfer(bank *bankInstance, bankAccount senderAccount){
         scanf("%lf", &transferAmount); 
 
         // Check if sender's balance is sufficient for transfer
-        if(senderAccount.balance >= transferAmount) {
-            senderAccount.balance -= transferAmount;
+        if(senderAccount->balance >= transferAmount) {
+            senderAccount->balance -= transferAmount;
             bankInstance->accounts[indexOfreceiver].balance += transferAmount;
             printf("Transfer Successful!\n");
         } else {
