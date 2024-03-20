@@ -21,7 +21,7 @@ bank NepalRastraBank; // Global instance of the bank named NepalRastraBank
 
 // Function prototypes
 int searchForAccount(int customer_account_number);
-void customerPortal(bankAccount customerAccount, int i);
+void customerPortal(bankAccount *customerAccount, int i);
 void CustomerTasks(int acNumber);
 void withdraw(bankAccount * customerAccount);
 void transfer(bank *bankInstance, bankAccount *senderAccount);
@@ -42,7 +42,7 @@ int searchForAccount(int customer_account_number) {
 }
 
 // function to enter customer portal 
-void customerPortal(bankAccount customerAccount, int i){
+void customerPortal(bankAccount *customerAccount, int i){
     int choice;
     do {
         printf("\nCustomer Options:\n");
@@ -58,10 +58,10 @@ void customerPortal(bankAccount customerAccount, int i){
                 printf("Your account balance: %.2f\n", NepalRastraBank.accounts[i].balance);
                 break;
             case 2:
-                withdraw(&customerAccount);
+                withdraw(customerAccount);
                 break;
             case 3:
-                transfer(&NepalRastraBank, &customerAccount);
+                transfer(&NepalRastraBank, customerAccount);
                 break;
             case 4:
                 printf("Exiting customer tasks.\n");
@@ -83,7 +83,7 @@ void CustomerTasks(int acNumber) {
         
         if (strcmp(entered_password, NepalRastraBank.accounts[index_of_account].account_Password) == 0) {
             printf("Login Successful!\n");
-            customerPortal(NepalRastraBank.accounts[index_of_account], index_of_account);
+            customerPortal(& NepalRastraBank.accounts[index_of_account], index_of_account);
         } else {
             printf("Access denied.\n");
         }
@@ -111,10 +111,11 @@ void transfer(bank *bankInstance, bankAccount *senderAccount){
     
     if(indexOfreceiver != -1) { 
         printf("\nEnter the amount to transfer: ");
-        scanf("%lf", &transferAmount); 
+        scanf("%lf", &transferAmount);
 
         // Check if sender's balance is sufficient for transfer
         if(senderAccount->balance >= transferAmount) {
+
             senderAccount->balance -= transferAmount;
             bankInstance->accounts[indexOfreceiver].balance += transferAmount;
             printf("Transfer Successful!\n");
@@ -183,11 +184,11 @@ int deleteAccount(bank *bankInstance, int accountNumber) {
 void displayAllAccounts(const bank *bankInstance) {
     printf("\nAll Bank Accounts:\n");
     printf("--------------------------------------------------------------\n");
-    printf("| %s | %s | %s | %s |\n", "Account #", "Holder Name", "Balance", "Password");
+    printf("| %s | %s | %s | %s |\n", "Account No.", "Holder Name", "Balance", "Password");
     printf("--------------------------------------------------------------\n");
 
     for (int i = 0; i < bankInstance->num_Accounts; i++) {
-        printf("| %d | %s | %.2f | %s |\n", 
+        printf("|     %d     |   %s   |  %.2f  |  %s    |\n", 
             bankInstance->accounts[i].accountNumber, 
             bankInstance->accounts[i].account_Holder_Name, 
             bankInstance->accounts[i].balance, 
